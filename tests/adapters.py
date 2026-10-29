@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import os
+import regex as re
 from collections.abc import Iterable
 from typing import IO, Any, BinaryIO
+from .tokenizer import Tokenizer
 
 import numpy.typing as npt
 import torch
 from jaxtyping import Bool, Float, Int
 from torch import Tensor
+
 
 
 def run_linear(
@@ -589,4 +592,45 @@ def run_train_bpe(
                 representing that <token1> was merged with <token2>.
                 Merges are ordered by order of creation.
     """
-    raise NotImplementedError
+    # raise NotImplementedError
+    corpus = read_file(input_path)
+    print(f"printing text length: {len(corpus)}")
+    print(f"special tokens are: {special_tokens}")
+    print(f"target vocab size is: {vocab_size}")
+    tokenizer = Tokenizer(special_tokens)
+    tokenizer.train_tokenizer(vocab_size, corpus)
+    print("printing merges: ")
+    print(tokenizer.get_merges_bytes())
+
+    return (tokenizer.vocab, tokenizer.get_merges_bytes())
+
+    
+    
+    # content = "hello world 8 hello! こんにちは!"
+    # encoded = content.encode("utf-8")
+    # print("printing encoding")
+    # print(type(encoded))
+    # print(encoded)
+    # print(list(encoded))
+    # extra_vocab = dict()
+    # for i in range(len(special_tokens)):
+    #     extra_vocab[256 + i] = special_tokens[i].encode("utf-8")
+    # print(init_vocab)
+    # merges = list()
+    # print(content)
+    # split_with_vocab(vocab, content)
+
+    
+
+def read_file(input_path: str | os.PathLike) -> str: 
+    with open(input_path, "r", encoding = "utf-8") as file: 
+        return file.read()
+
+def split_with_vocab(vocab, text) -> List[str]:
+    delimiter_pattern = "|".join(re.escape(s) for s in vocab)
+    parts = re.split(delimiter_pattern, text)
+    print(f"number of segments: {len(parts)}")
+    return parts
+
+
+
