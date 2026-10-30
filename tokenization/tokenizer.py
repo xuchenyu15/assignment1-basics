@@ -23,16 +23,55 @@ class Tokenizer:
         self, 
         target_vocab_size: int, 
         corpus: str
-    ):
-        contents = self.preprocess(corpus)
-        encoded_lists = [self.tokenize(content) for content in contents]
-        print(f"encoded_lists size: {len(encoded_lists)}")
-        
+    ):  
         if len(self.vocab) >= target_vocab_size:
             print(f"train finished, current vocabulary size: {len(self.vocab)}")
             return
 
-        pretokens_map, pairs_map, merged_counts = self.aggregate_counts(encoded_lists)
+        pretokens_map, pairs_map, merged_counts = self.aggregate_counts(corpus)
+
+        while len(self.vocab) < target_vocab_size:
+            next_merge_pair = self.find_next_merge(merged_counts)
+            if next_merge_pair == None:
+                print("No merges to be performed")
+                break
+            next_merge = self.merge(next_merge_pair)
+            self.apply_merge_batch(next_merge, merged_counts, pretokens_map, pairs_map)
+        print(f"train finished, current vocabulary size: {len(self.vocab)}")
+        return
+
+    def train_tokenizer_from_string_counter(
+        self, 
+        target_vocab_size: int, 
+        string_counter: dict[str, int]
+    ):  
+        if len(self.vocab) >= target_vocab_size:
+            print(f"train finished, current vocabulary size: {len(self.vocab)}")
+            return
+
+        pretokens_map, pairs_map, merged_counts = self.aggregate_counts_from_string_counter(string_counter)
+
+        print("Start training")
+        while len(self.vocab) < target_vocab_size:
+            next_merge_pair = self.find_next_merge(merged_counts)
+            if next_merge_pair == None:
+                print("No merges to be performed")
+                break
+            next_merge = self.merge(next_merge_pair)
+            self.apply_merge_batch(next_merge, merged_counts, pretokens_map, pairs_map)
+        print(f"train finished, current vocabulary size: {len(self.vocab)}")
+        return
+
+    def train_tokenizer_from_aggregated_counts(
+        self, 
+        target_vocab_size: int, 
+        pretokens_map: dict[tuple, Pretoken], 
+        pairs_map: dict[tuple[int, int], set[tuple]], 
+        merged_counts: dict[tuple[int, int], int]
+    ):  
+        if len(self.vocab) >= target_vocab_size:
+            print(f"train finished, current vocabulary size: {len(self.vocab)}")
+            return
 
         while len(self.vocab) < target_vocab_size:
             next_merge_pair = self.find_next_merge(merged_counts)
@@ -57,8 +96,12 @@ class Tokenizer:
 
     def aggregate_counts(
         self, 
-        encoded_lists: list[list[int]]
-    ):
+        corpus: str
+    ) -> tuple[dict[tuple, Pretoken], dict[tuple[int, int], set[tuple]], dict[tuple[int, int], int]]:
+        contents = self.preprocess(corpus)
+        encoded_lists = [self.tokenize(content) for content in contents]
+        print(f"encoded_lists size: {len(encoded_lists)}")
+        
         pretokens_map = dict()
         pairs_map = dict()
         merged_counts = dict()
@@ -73,6 +116,33 @@ class Tokenizer:
             pair_counts = pretoken.get_pair_counts()
             self.ingest_counts(merged_counts, pair_counts)
             self.ingest_pair_map(pairs_map, pair_counts.keys(), encoded_tuple)
+
+        return (pretokens_map, pairs_map, merged_counts)
+
+    def aggregate_counts_from_string_counter(
+        self, 
+        string_counter: dict[str, int]
+    ) -> tuple[dict[tuple, Pretoken], dict[tuple[int, int], set[tuple]], dict[tuple[int, int], int]]:
+        pretokens_map = dict()
+        pairs_map = dict()
+        merged_counts = dict()
+
+        print("Aggregating from string counter inside tokenizer.")
+
+        for content, occurrence in string_counter.items():
+            encoded_list = self.tokenize(content)
+            encoded_tuple = tuple(encoded_list)
+            if encoded_tuple not in pretokens_map:
+                pretokens_map[encoded_tuple] = Pretoken(0, encoded_list)
+            pretoken = pretokens_map[encoded_tuple]
+            pretoken.increase_occurrence(occurrence)
+
+        for encoded_tuple, pretoken in pretokens_map.items():
+            pair_counts = pretoken.get_pair_counts()
+            self.ingest_counts(merged_counts, pair_counts)
+            self.ingest_pair_map(pairs_map, pair_counts.keys(), encoded_tuple)
+
+        print("Aggregated counts and maps.")
 
         return (pretokens_map, pairs_map, merged_counts)
 

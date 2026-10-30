@@ -164,3 +164,7 @@ cython_debug/
 
 # data set for training
 /data
+
+# test outputs:
+vocab.json
+merges.json
