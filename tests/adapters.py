@@ -4,7 +4,7 @@ import os
 import regex as re
 from collections.abc import Iterable
 from typing import IO, Any, BinaryIO
-from tokenizer.tokenizer import Tokenizer
+from tokenization.tokenizer import Tokenizer
 
 import numpy.typing as npt
 import torch
