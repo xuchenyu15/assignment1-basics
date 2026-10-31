@@ -59,8 +59,13 @@ def main():
     path = (
         Path(__file__).resolve().parent.parent
         / "data"
-        / "TinyStoriesV2-GPT4-train.txt"
+        / "owt_train.txt"
     )
+    # path = (
+    #     Path(__file__).resolve().parent.parent
+    #     / "data"
+    #     / "TinyStoriesV2-GPT4-train.txt"
+    # )
     # path = (
     #     Path(__file__).resolve().parent.parent
     #     / "tests"
@@ -68,6 +73,7 @@ def main():
     #     / "tinystories_sample_5M.txt"
     # )
     num_processes = 4
+    num_chunks = 48
     chunker = Chunker()
     combined_counts = Counter()
     # aggregated_pretokens_map = dict()
@@ -76,12 +82,17 @@ def main():
 
     with open(path, "rb") as f:
         boundaries = chunker.find_chunk_boundaries(
-            f, num_processes, b"<|endoftext|>"
+            f, num_chunks, b"<|endoftext|>"
         )
+
+    # tasks = [
+    #     (path, start, end) 
+    #     for start, end in zip(boundaries[:-1], boundaries[1:])
+    # ]
 
     tasks = [
         (path, start, end) 
-        for start, end in zip(boundaries[:-1], boundaries[1:])
+        for start, end in zip(boundaries[:6], boundaries[1:7])
     ]
 
     with ProcessPoolExecutor(max_workers=num_processes) as pool:
