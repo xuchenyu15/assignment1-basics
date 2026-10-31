@@ -2,6 +2,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from collections import Counter
 import json
+import time
 
 from tokenization.chunker import Chunker
 from tokenization.tokenizer import Tokenizer
@@ -74,6 +75,7 @@ def main():
     # )
     num_processes = 4
     num_chunks = 48
+    calculated = 48
     chunker = Chunker()
     combined_counts = Counter()
     # aggregated_pretokens_map = dict()
@@ -85,15 +87,15 @@ def main():
             f, num_chunks, b"<|endoftext|>"
         )
 
-    # tasks = [
-    #     (path, start, end) 
-    #     for start, end in zip(boundaries[:-1], boundaries[1:])
-    # ]
-
     tasks = [
         (path, start, end) 
-        for start, end in zip(boundaries[:6], boundaries[1:7])
+        for start, end in zip(boundaries[:-1], boundaries[1:])
     ]
+
+    # tasks = [
+    #     (path, start, end) 
+    #     for start, end in zip(boundaries[:calculated], boundaries[1:calculated + 1])
+    # ]
 
     with ProcessPoolExecutor(max_workers=num_processes) as pool:
         for worker_counts in pool.map(process_chunk, tasks):
@@ -102,7 +104,7 @@ def main():
     print("Count combined")        
 
     tokenizer = Tokenizer(["<|endoftext|>"])
-    tokenizer.train_tokenizer_from_string_counter_heap(10000, combined_counts)
+    tokenizer.train_tokenizer_from_string_counter_heap(32000, combined_counts)
     print("printing merges: ")
     print(tokenizer.get_merges_bytes())
     token_id, token = max(tokenizer.vocab.items(), key=lambda item: len(item[1]))
@@ -111,15 +113,23 @@ def main():
     print("Length in bytes:", len(token))
 
     # Hex preserves arbitrary token bytes, including incomplete UTF-8 sequences.
-    with open("vocab.json", "w", encoding="utf-8") as f:
+    with open(f"vocab-{str(calculated)}.json", "w", encoding="utf-8") as f:
         json.dump({token_id: token.hex() for token_id, token in tokenizer.vocab.items()}, f, indent=2)
         f.write("\n")
 
-    with open("merges.json", "w", encoding="utf-8") as f:
+    with open(f"merges-{str(calculated)}.json", "w", encoding="utf-8") as f:
         json.dump([[left.hex(), right.hex()] for left, right in tokenizer.get_merges_bytes()], f, indent=2)
         f.write("\n")
             
             
 
 if __name__ == "__main__":
-    main()
+    start = time.perf_counter()
+    try: 
+        main()
+    finally:
+        elapsed = time.perf_counter() - start 
+        print(
+            f"Total elapsed: {elapsed:.4f}s ({elapsed / 60:.4f} min)",
+            flush=True,
+        )
