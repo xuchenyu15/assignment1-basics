@@ -102,7 +102,7 @@ def main():
     print("Count combined")        
 
     tokenizer = Tokenizer(["<|endoftext|>"])
-    tokenizer.train_tokenizer_from_string_counter(10000, combined_counts)
+    tokenizer.train_tokenizer_from_string_counter_heap(10000, combined_counts)
     print("printing merges: ")
     print(tokenizer.get_merges_bytes())
     token_id, token = max(tokenizer.vocab.items(), key=lambda item: len(item[1]))

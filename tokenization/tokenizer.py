@@ -1,7 +1,21 @@
 import regex as re
 from .pretoken import Pretoken
 import time
+import heapq
 
+class MaxEntry: 
+    def __init__(self, count, pair, byte_pair):
+        self.count = count
+        self.pair = pair
+        self.byte_pair = byte_pair
+
+    def __lt__(self, other):
+        return (self.count, self.byte_pair) > (other.count, other.byte_pair)
+
+    def set_count(self, count):
+        self.count = count
+
+    
 class Tokenizer: 
     PAT = r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"""
     
@@ -16,11 +30,19 @@ class Tokenizer:
         for j in range(len(special_tokens)):
             self.vocab[256 + j] = special_tokens[j].encode("utf-8")
         self.merges = list() # list[tuple(int, int, int)]
+        self.heap = []
 
     def vocab_size(self):
         return len(self.vocab)
 
     def train_tokenizer(
+        self, 
+        target_vocab_size: int, 
+        corpus: str
+    ):  
+        return self.train_tokenizer_from_corpus_deprecated(target_vocab_size, corpus)
+
+    def train_tokenizer_from_corpus_deprecated(
         self, 
         target_vocab_size: int, 
         corpus: str
@@ -88,6 +110,84 @@ class Tokenizer:
 
         print(f"train finished, current vocabulary size: {len(self.vocab)}")
         return
+
+    def train_tokenizer_from_string_counter_heap(
+        self, 
+        target_vocab_size: int, 
+        string_counter: dict[str, int]
+    ):  
+        if len(self.vocab) >= target_vocab_size:
+            print(f"train finished, current vocabulary size: {len(self.vocab)}")
+            return
+
+        pretokens_map, pairs_map, merged_counts = self.aggregate_counts_from_string_counter(string_counter)
+
+        print("initializing heap")
+        self.initialize_heap(merged_counts)
+        print("heap initialized")
+
+        print("Start training")
+        training_start = time.perf_counter()
+        interval_start = training_start
+        merge_count = 0
+        selection_seconds = 0.0
+        update_seconds = 0.0
+        merge_count = 0
+
+        while len(self.vocab) < target_vocab_size:
+            start = time.perf_counter()
+            next_merge_pair = self.find_next_merge_heap(merged_counts)
+            
+            selection_seconds += time.perf_counter() - start
+            
+            if next_merge_pair == None:
+                print("No merges to be performed")
+                break
+            start = time.perf_counter()
+            next_merge = self.merge(next_merge_pair)
+            self.apply_merge_batch_heap(next_merge, merged_counts, pretokens_map, pairs_map)
+            update_seconds += time.perf_counter() - start
+
+            merge_count += 1
+            if merge_count % 100 == 0:
+                now = time.perf_counter()
+                print(
+                    f"Vocab: {len(self.vocab)} | "
+                    f"Selection: {selection_seconds:.4f}s | "
+                    f"Updates: {update_seconds:.4f}s | "
+                    f"Candidates: {len(merged_counts)}",
+                    flush=True,
+                )
+                selection_seconds = 0.0
+                update_seconds = 0.0
+
+        print(f"train finished, current vocabulary size: {len(self.vocab)}")
+        return
+
+    def initialize_heap(self, merged_counts):
+        for pair, count in merged_counts.items():
+            byte_pair = (self.vocab[pair[0]], self.vocab[pair[1]])
+            entry = MaxEntry(count, pair, byte_pair)
+            heapq.heappush(self.heap, entry)
+        return
+
+    def get_max_pair_heap(self, merged_counts):
+        while len(self.heap) > 0:
+            entry = heapq.heappop(self.heap)
+            if entry.pair not in merged_counts:
+                continue
+            elif merged_counts[entry.pair] == 0:
+                del merged_counts[entry.pair]
+                continue 
+            elif entry.count != merged_counts[entry.pair]:
+                # number has been reduced, restore entry and push back to heap
+                entry.set_count(merged_counts[entry.pair])
+                heapq.heappush(self.heap, entry)
+                continue
+            else:
+                return entry.pair
+        # nothing left in the heap
+        return None
 
     def train_tokenizer_from_aggregated_counts(
         self, 
@@ -178,6 +278,12 @@ class Tokenizer:
         merged_counts: dict[tuple[int, int], int]
     ) -> None | tuple[int, int]:
         return self.get_max_pair_scan(merged_counts)
+
+    def find_next_merge_heap(
+        self,
+        merged_counts: dict[tuple[int, int], int]
+    ) -> None | tuple[int, int]:
+        return self.get_max_pair_heap(merged_counts)
 
     def tokenize(self, text: str) -> list[int]:
         # print(f"current text have {len(text)} as length")
@@ -291,6 +397,30 @@ class Tokenizer:
 
         return
 
+    def apply_merge_batch_heap(
+        self, 
+        merge, 
+        merged_counts,
+        pretokens_map, 
+        pairs_map
+    ) -> dict[tuple[int, int], int]:
+        merge_pair = merge[1]
+        accumulated_diff_counts = dict()
+        if merge_pair not in pairs_map or len(pairs_map[merge_pair]) == 0:
+            return
+        for encoded_tuple in list(pairs_map[merge_pair]):
+            pretoken = pretokens_map[encoded_tuple]
+            origin_pairs = set(pretoken.pair_positions.keys())
+            diff_counts = pretoken.apply_merge(merge)
+            removed_pairs = origin_pairs - set(pretoken.pair_positions.keys())
+            new_pairs = pretoken.pair_positions.keys() - origin_pairs
+            self.ingest_counts(accumulated_diff_counts, diff_counts)
+            self.remove_pair_map(pairs_map, removed_pairs, encoded_tuple)
+            self.ingest_pair_map(pairs_map, new_pairs, encoded_tuple)
+
+        self.ingest_diff_counts_heap(merged_counts, accumulated_diff_counts)
+        return
+
     def ingest_pair_map(self, pairs_map, pairs, encoded_tuple):
         for pair in pairs: 
             if pair not in pairs_map:
@@ -310,6 +440,19 @@ class Tokenizer:
     def ingest_counts(self, merged_counts, pair_counts):
         for pair, count in pair_counts.items():
             merged_counts[pair] = merged_counts.get(pair, 0) + count
+            if merged_counts[pair] == 0:
+                del merged_counts[pair]
+        return
+
+    def ingest_diff_counts_heap(self, merged_counts, diff_counts):
+        for pair, count in diff_counts.items():
+            if pair not in merged_counts:
+                merged_counts[pair] = count
+                byte_pair = (self.vocab[pair[0]], self.vocab[pair[1]])
+                entry = MaxEntry(count, pair, byte_pair)
+                heapq.heappush(self.heap, entry)
+            else:
+                merged_counts[pair] = merged_counts.get(pair, 0) + count
             if merged_counts[pair] == 0:
                 del merged_counts[pair]
         return
