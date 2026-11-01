@@ -1,0 +1,371 @@
+TinyStories run: 
+
+chenyuxu@Chenyus-MacBook-Pro-M5 assignment1-basics % uv run python -m cs336_basics.tokenizer_experiments
+Found 10 samples.
+Total bytes: 7959
+Total tokens: 1930
+Total time: 3.3119 s
+The ratio of bytes/token is 4.1238.
+The throughput of tokenizer is 2403.1880 bytes/s.
+Estimated Pile time: 95359.44 hours
+Total elapsed: 3.3305s (0.0555 min)
+
+owt run: 
+
+chenyuxu@Chenyus-MacBook-Pro-M5 assignment1-basics % uv run python -m cs336_basics.tokenizer_experiments
+Found 10 samples.
+CacheInfo(hits=0, misses=0, maxsize=50000, currsize=0)
+CacheInfo(hits=217, misses=223, maxsize=50000, currsize=223)
+CacheInfo(hits=458, misses=411, maxsize=50000, currsize=411)
+CacheInfo(hits=899, misses=632, maxsize=50000, currsize=632)
+CacheInfo(hits=1523, misses=890, maxsize=50000, currsize=890)
+CacheInfo(hits=1967, misses=1118, maxsize=50000, currsize=1118)
+CacheInfo(hits=2130, misses=1183, maxsize=50000, currsize=1183)
+CacheInfo(hits=2252, misses=1244, maxsize=50000, currsize=1244)
+CacheInfo(hits=3187, misses=1592, maxsize=50000, currsize=1592)
+CacheInfo(hits=3511, misses=1709, maxsize=50000, currsize=1709)
+Total bytes: 29935
+Total tokens: 6471
+Total time: 0.0127 s
+The ratio of bytes/token is 4.6260.
+The throughput of tokenizer is 2359021.3953 bytes/s.
+Estimated Pile time: 97.14 hours
+Total elapsed: 0.0325s (0.0005 min)
+
+owt sample with TiniStories tokenizer: 
+
+chenyuxu@Chenyus-MacBook-Pro-M5 assignment1-basics % uv run python -m cs336_basics.tokenizer_experiments
+Found 10 samples.
+Total bytes: 29935
+Total tokens: 7946
+Total time: 13.3175 s
+The ratio of bytes/token is 3.7673.
+The throughput of tokenizer is 2247.7962 bytes/s.
+Estimated Pile time: 101951.71 hours
+Total elapsed: 13.3368s (0.2223 min)
+
+Encoding result: 
+chenyuxu@Chenyus-MacBook-Pro-M5 assignment1-basics % uv run python -m cs336_basics.tokenizer_encode
+19,100,000 tokens | 78,879,338 input bytes | 15,749,101 bytes/s
+38,500,000 tokens | 159,014,408 input bytes | 15,856,396 bytes/s
+57,900,000 tokens | 239,107,229 input bytes | 15,884,601 bytes/s
+77,200,000 tokens | 318,808,751 input bytes | 15,894,078 bytes/s
+96,500,000 tokens | 398,505,855 input bytes | 15,895,546 bytes/s
+115,700,000 tokens | 477,803,982 input bytes | 15,884,613 bytes/s
+134,900,000 tokens | 557,075,824 input bytes | 15,870,092 bytes/s
+154,000,000 tokens | 635,958,612 input bytes | 15,852,010 bytes/s
+173,100,000 tokens | 714,846,644 input bytes | 15,840,653 bytes/s
+192,100,000 tokens | 793,325,850 input bytes | 15,822,300 bytes/s
+211,200,000 tokens | 872,206,403 input bytes | 15,812,996 bytes/s
+230,300,000 tokens | 951,091,590 input bytes | 15,804,493 bytes/s
+249,400,000 tokens | 1,029,981,910 input bytes | 15,796,435 bytes/s
+268,500,000 tokens | 1,108,838,952 input bytes | 15,792,448 bytes/s
+287,600,000 tokens | 1,187,725,515 input bytes | 15,789,607 bytes/s
+306,700,000 tokens | 1,266,629,616 input bytes | 15,785,714 bytes/s
+325,800,000 tokens | 1,345,509,026 input bytes | 15,784,377 bytes/s
+344,700,000 tokens | 1,423,553,917 input bytes | 15,771,226 bytes/s
+363,400,000 tokens | 1,500,791,633 input bytes | 15,749,756 bytes/s
+382,300,000 tokens | 1,578,837,859 input bytes | 15,742,518 bytes/s
+401,400,000 tokens | 1,657,731,895 input bytes | 15,740,407 bytes/s
+420,200,000 tokens | 1,735,382,315 input bytes | 15,730,789 bytes/s
+439,300,000 tokens | 1,814,254,272 input bytes | 15,729,161 bytes/s
+458,500,000 tokens | 1,893,516,521 input bytes | 15,731,427 bytes/s
+477,600,000 tokens | 1,972,397,779 input bytes | 15,731,673 bytes/s
+496,400,000 tokens | 2,050,053,756 input bytes | 15,721,933 bytes/s
+515,500,000 tokens | 2,128,936,189 input bytes | 15,722,562 bytes/s
+534,600,000 tokens | 2,207,825,257 input bytes | 15,721,952 bytes/s
+Finished: 539,426,336 tokens in 141.70s (3,806,845 tokens/s)
+Total elapsed: 141.7149s (2.3619 min)
+chenyuxu@Chenyus-MacBook-Pro-M5 assignment1-basics % uv run python -m cs336_basics.tokenizer_encode
+9,600,000 tokens | 41,908,646 input bytes | 8,346,041 bytes/s
+19,300,000 tokens | 84,206,761 input bytes | 8,392,205 bytes/s
+28,900,000 tokens | 126,230,858 input bytes | 8,390,852 bytes/s
+38,500,000 tokens | 168,138,905 input bytes | 8,377,974 bytes/s
+48,000,000 tokens | 209,572,414 input bytes | 8,358,644 bytes/s
+57,800,000 tokens | 252,450,190 input bytes | 8,390,729 bytes/s
+67,300,000 tokens | 293,858,659 input bytes | 8,367,061 bytes/s
+76,800,000 tokens | 335,367,625 input bytes | 8,358,240 bytes/s
+86,200,000 tokens | 376,510,919 input bytes | 8,343,491 bytes/s
+95,500,000 tokens | 417,293,829 input bytes | 8,324,744 bytes/s
+105,100,000 tokens | 459,046,847 input bytes | 8,320,408 bytes/s
+114,500,000 tokens | 500,147,649 input bytes | 8,307,107 bytes/s
+124,100,000 tokens | 542,286,885 input bytes | 8,310,248 bytes/s
+133,400,000 tokens | 582,846,634 input bytes | 8,293,003 bytes/s
+143,000,000 tokens | 624,848,721 input bytes | 8,293,051 bytes/s
+152,500,000 tokens | 666,389,523 input bytes | 8,289,497 bytes/s
+162,000,000 tokens | 707,787,142 input bytes | 8,283,854 bytes/s
+171,300,000 tokens | 748,256,903 input bytes | 8,269,728 bytes/s
+180,400,000 tokens | 788,012,689 input bytes | 8,252,986 bytes/s
+189,800,000 tokens | 829,015,883 input bytes | 8,247,077 bytes/s
+199,200,000 tokens | 870,116,558 input bytes | 8,245,120 bytes/s
+208,600,000 tokens | 910,975,945 input bytes | 8,240,970 bytes/s
+218,000,000 tokens | 951,967,824 input bytes | 8,238,049 bytes/s
+227,300,000 tokens | 992,622,704 input bytes | 8,232,837 bytes/s
+236,600,000 tokens | 1,033,257,709 input bytes | 8,225,787 bytes/s
+246,200,000 tokens | 1,075,489,264 input bytes | 8,232,922 bytes/s
+255,600,000 tokens | 1,116,460,687 input bytes | 8,229,731 bytes/s
+265,000,000 tokens | 1,157,739,380 input bytes | 8,229,660 bytes/s
+274,400,000 tokens | 1,198,877,993 input bytes | 8,227,488 bytes/s
+283,700,000 tokens | 1,239,440,704 input bytes | 8,222,409 bytes/s
+293,000,000 tokens | 1,280,220,373 input bytes | 8,219,310 bytes/s
+302,400,000 tokens | 1,321,149,838 input bytes | 8,216,746 bytes/s
+311,700,000 tokens | 1,361,873,137 input bytes | 8,213,676 bytes/s
+321,200,000 tokens | 1,403,482,970 input bytes | 8,214,973 bytes/s
+330,600,000 tokens | 1,444,519,575 input bytes | 8,213,073 bytes/s
+339,800,000 tokens | 1,484,704,159 input bytes | 8,206,957 bytes/s
+349,200,000 tokens | 1,525,938,907 input bytes | 8,206,070 bytes/s
+358,500,000 tokens | 1,566,344,479 input bytes | 8,201,340 bytes/s
+367,900,000 tokens | 1,607,429,523 input bytes | 8,201,183 bytes/s
+377,100,000 tokens | 1,647,490,936 input bytes | 8,196,351 bytes/s
+386,400,000 tokens | 1,688,051,587 input bytes | 8,192,686 bytes/s
+395,800,000 tokens | 1,729,008,414 input bytes | 8,191,307 bytes/s
+405,300,000 tokens | 1,770,754,638 input bytes | 8,194,084 bytes/s
+414,800,000 tokens | 1,812,280,328 input bytes | 8,194,999 bytes/s
+424,200,000 tokens | 1,853,210,558 input bytes | 8,193,885 bytes/s
+433,700,000 tokens | 1,894,823,138 input bytes | 8,194,975 bytes/s
+443,000,000 tokens | 1,935,377,475 input bytes | 8,192,462 bytes/s
+452,500,000 tokens | 1,976,693,085 input bytes | 8,192,760 bytes/s
+461,900,000 tokens | 2,017,745,664 input bytes | 8,191,892 bytes/s
+471,300,000 tokens | 2,058,926,817 input bytes | 8,191,862 bytes/s
+480,500,000 tokens | 2,099,299,532 input bytes | 8,188,178 bytes/s
+489,600,000 tokens | 2,139,022,814 input bytes | 8,182,673 bytes/s
+498,900,000 tokens | 2,179,883,955 input bytes | 8,181,253 bytes/s
+508,500,000 tokens | 2,222,036,928 input bytes | 8,184,985 bytes/s
+518,100,000 tokens | 2,264,055,584 input bytes | 8,187,711 bytes/s
+527,400,000 tokens | 2,304,567,766 input bytes | 8,185,261 bytes/s
+536,800,000 tokens | 2,345,618,869 input bytes | 8,184,177 bytes/s
+546,300,000 tokens | 2,387,249,319 input bytes | 8,185,135 bytes/s
+555,700,000 tokens | 2,428,258,228 input bytes | 8,184,168 bytes/s
+565,100,000 tokens | 2,469,295,149 input bytes | 8,184,085 bytes/s
+574,400,000 tokens | 2,509,894,430 input bytes | 8,182,887 bytes/s
+583,800,000 tokens | 2,551,204,326 input bytes | 8,183,676 bytes/s
+593,200,000 tokens | 2,592,323,396 input bytes | 8,184,009 bytes/s
+602,600,000 tokens | 2,633,486,751 input bytes | 8,183,955 bytes/s
+612,000,000 tokens | 2,674,480,548 input bytes | 8,183,787 bytes/s
+621,500,000 tokens | 2,715,857,117 input bytes | 8,184,266 bytes/s
+630,800,000 tokens | 2,756,157,806 input bytes | 8,181,528 bytes/s
+640,200,000 tokens | 2,797,476,381 input bytes | 8,181,627 bytes/s
+649,500,000 tokens | 2,838,047,721 input bytes | 8,180,341 bytes/s
+658,800,000 tokens | 2,878,863,352 input bytes | 8,179,928 bytes/s
+668,300,000 tokens | 2,920,301,786 input bytes | 8,180,833 bytes/s
+677,600,000 tokens | 2,960,884,647 input bytes | 8,179,620 bytes/s
+686,900,000 tokens | 3,001,324,784 input bytes | 8,178,187 bytes/s
+696,300,000 tokens | 3,042,531,982 input bytes | 8,178,831 bytes/s
+705,700,000 tokens | 3,083,560,986 input bytes | 8,179,049 bytes/s
+715,100,000 tokens | 3,124,708,269 input bytes | 8,179,214 bytes/s
+724,500,000 tokens | 3,165,713,876 input bytes | 8,179,444 bytes/s
+734,000,000 tokens | 3,207,333,644 input bytes | 8,180,456 bytes/s
+743,400,000 tokens | 3,248,343,824 input bytes | 8,179,746 bytes/s
+752,800,000 tokens | 3,289,582,489 input bytes | 8,179,836 bytes/s
+762,200,000 tokens | 3,330,854,452 input bytes | 8,179,877 bytes/s
+771,500,000 tokens | 3,371,467,018 input bytes | 8,179,037 bytes/s
+780,800,000 tokens | 3,411,961,794 input bytes | 8,177,441 bytes/s
+790,200,000 tokens | 3,452,966,727 input bytes | 8,177,193 bytes/s
+799,700,000 tokens | 3,494,594,407 input bytes | 8,178,167 bytes/s
+809,300,000 tokens | 3,536,660,803 input bytes | 8,179,847 bytes/s
+818,800,000 tokens | 3,578,009,895 input bytes | 8,180,699 bytes/s
+828,100,000 tokens | 3,618,511,268 input bytes | 8,179,480 bytes/s
+837,600,000 tokens | 3,660,061,816 input bytes | 8,180,681 bytes/s
+847,000,000 tokens | 3,701,152,023 input bytes | 8,180,868 bytes/s
+856,400,000 tokens | 3,742,261,386 input bytes | 8,180,629 bytes/s
+865,800,000 tokens | 3,783,555,976 input bytes | 8,180,821 bytes/s
+875,100,000 tokens | 3,824,037,361 input bytes | 8,179,682 bytes/s
+884,500,000 tokens | 3,865,195,759 input bytes | 8,179,834 bytes/s
+893,800,000 tokens | 3,905,460,474 input bytes | 8,177,903 bytes/s
+903,200,000 tokens | 3,946,531,976 input bytes | 8,177,598 bytes/s
+912,700,000 tokens | 3,988,064,823 input bytes | 8,178,276 bytes/s
+922,200,000 tokens | 4,029,759,945 input bytes | 8,179,579 bytes/s
+931,700,000 tokens | 4,071,282,955 input bytes | 8,180,793 bytes/s
+940,900,000 tokens | 4,111,790,990 input bytes | 8,179,805 bytes/s
+950,300,000 tokens | 4,152,724,556 input bytes | 8,179,468 bytes/s
+959,500,000 tokens | 4,192,796,500 input bytes | 8,177,803 bytes/s
+968,800,000 tokens | 4,233,446,578 input bytes | 8,176,948 bytes/s
+978,100,000 tokens | 4,274,051,881 input bytes | 8,176,141 bytes/s
+987,500,000 tokens | 4,315,038,114 input bytes | 8,175,614 bytes/s
+997,000,000 tokens | 4,356,640,264 input bytes | 8,176,746 bytes/s
+1,006,500,000 tokens | 4,398,376,647 input bytes | 8,177,986 bytes/s
+1,015,800,000 tokens | 4,438,850,732 input bytes | 8,176,709 bytes/s
+1,024,100,000 tokens | 4,475,456,699 input bytes | 8,168,206 bytes/s
+1,033,500,000 tokens | 4,516,342,178 input bytes | 8,168,114 bytes/s
+1,043,000,000 tokens | 4,557,799,179 input bytes | 8,168,910 bytes/s
+1,052,100,000 tokens | 4,597,596,339 input bytes | 8,166,964 bytes/s
+1,061,400,000 tokens | 4,638,226,902 input bytes | 8,166,376 bytes/s
+1,070,700,000 tokens | 4,678,832,392 input bytes | 8,165,844 bytes/s
+1,080,000,000 tokens | 4,719,484,881 input bytes | 8,165,118 bytes/s
+1,089,500,000 tokens | 4,761,248,476 input bytes | 8,166,254 bytes/s
+1,099,000,000 tokens | 4,802,701,887 input bytes | 8,166,814 bytes/s
+1,108,400,000 tokens | 4,843,683,428 input bytes | 8,166,759 bytes/s
+1,117,800,000 tokens | 4,884,717,014 input bytes | 8,166,645 bytes/s
+1,127,200,000 tokens | 4,925,697,128 input bytes | 8,166,860 bytes/s
+1,136,500,000 tokens | 4,965,835,837 input bytes | 8,165,399 bytes/s
+1,145,800,000 tokens | 5,006,178,144 input bytes | 8,163,947 bytes/s
+1,155,300,000 tokens | 5,047,737,579 input bytes | 8,164,887 bytes/s
+1,164,600,000 tokens | 5,088,204,736 input bytes | 8,163,939 bytes/s
+1,174,100,000 tokens | 5,129,889,210 input bytes | 8,165,192 bytes/s
+1,183,500,000 tokens | 5,171,061,532 input bytes | 8,165,521 bytes/s
+1,193,000,000 tokens | 5,212,677,193 input bytes | 8,166,340 bytes/s
+1,202,300,000 tokens | 5,253,454,576 input bytes | 8,166,155 bytes/s
+1,211,800,000 tokens | 5,295,112,157 input bytes | 8,167,203 bytes/s
+1,221,300,000 tokens | 5,336,534,898 input bytes | 8,168,016 bytes/s
+1,230,700,000 tokens | 5,377,673,223 input bytes | 8,168,428 bytes/s
+1,240,100,000 tokens | 5,418,704,083 input bytes | 8,168,616 bytes/s
+1,249,300,000 tokens | 5,458,883,717 input bytes | 8,167,035 bytes/s
+1,258,700,000 tokens | 5,499,899,000 input bytes | 8,166,868 bytes/s
+1,268,100,000 tokens | 5,540,904,390 input bytes | 8,166,517 bytes/s
+1,277,400,000 tokens | 5,581,387,712 input bytes | 8,165,743 bytes/s
+1,286,900,000 tokens | 5,622,928,709 input bytes | 8,166,262 bytes/s
+1,296,300,000 tokens | 5,664,091,015 input bytes | 8,166,561 bytes/s
+1,305,700,000 tokens | 5,705,087,408 input bytes | 8,166,515 bytes/s
+1,315,000,000 tokens | 5,745,592,395 input bytes | 8,165,692 bytes/s
+1,324,500,000 tokens | 5,787,239,122 input bytes | 8,166,804 bytes/s
+1,334,000,000 tokens | 5,828,798,332 input bytes | 8,167,731 bytes/s
+1,343,500,000 tokens | 5,870,489,540 input bytes | 8,168,385 bytes/s
+1,353,000,000 tokens | 5,912,035,683 input bytes | 8,168,913 bytes/s
+1,362,300,000 tokens | 5,952,569,486 input bytes | 8,168,412 bytes/s
+1,371,800,000 tokens | 5,994,228,332 input bytes | 8,169,067 bytes/s
+1,381,200,000 tokens | 6,035,235,684 input bytes | 8,169,075 bytes/s
+1,390,700,000 tokens | 6,076,969,641 input bytes | 8,169,817 bytes/s
+1,399,800,000 tokens | 6,116,124,075 input bytes | 8,167,430 bytes/s
+1,409,100,000 tokens | 6,156,688,191 input bytes | 8,166,820 bytes/s
+1,418,400,000 tokens | 6,197,209,447 input bytes | 8,166,001 bytes/s
+1,427,900,000 tokens | 6,238,909,061 input bytes | 8,166,987 bytes/s
+1,437,400,000 tokens | 6,280,388,677 input bytes | 8,167,739 bytes/s
+1,447,000,000 tokens | 6,322,504,857 input bytes | 8,169,159 bytes/s
+1,456,200,000 tokens | 6,362,304,077 input bytes | 8,167,548 bytes/s
+1,465,600,000 tokens | 6,403,136,046 input bytes | 8,167,380 bytes/s
+1,475,000,000 tokens | 6,444,137,977 input bytes | 8,167,264 bytes/s
+1,484,500,000 tokens | 6,485,741,177 input bytes | 8,167,955 bytes/s
+1,493,900,000 tokens | 6,526,550,079 input bytes | 8,167,915 bytes/s
+1,503,100,000 tokens | 6,566,522,187 input bytes | 8,166,559 bytes/s
+1,512,400,000 tokens | 6,607,253,716 input bytes | 8,166,123 bytes/s
+1,521,700,000 tokens | 6,648,076,764 input bytes | 8,165,709 bytes/s
+1,531,100,000 tokens | 6,689,033,312 input bytes | 8,165,800 bytes/s
+1,540,400,000 tokens | 6,729,787,859 input bytes | 8,165,610 bytes/s
+1,549,800,000 tokens | 6,770,932,453 input bytes | 8,165,549 bytes/s
+1,559,200,000 tokens | 6,811,930,838 input bytes | 8,165,448 bytes/s
+1,568,700,000 tokens | 6,853,270,251 input bytes | 8,165,656 bytes/s
+1,578,100,000 tokens | 6,894,404,341 input bytes | 8,165,716 bytes/s
+1,587,300,000 tokens | 6,934,496,830 input bytes | 8,164,675 bytes/s
+1,596,700,000 tokens | 6,975,671,837 input bytes | 8,164,921 bytes/s
+1,606,100,000 tokens | 7,016,692,073 input bytes | 8,164,693 bytes/s
+1,615,400,000 tokens | 7,057,361,687 input bytes | 8,164,474 bytes/s
+1,624,900,000 tokens | 7,098,798,127 input bytes | 8,164,746 bytes/s
+1,634,200,000 tokens | 7,139,096,575 input bytes | 8,163,808 bytes/s
+1,643,600,000 tokens | 7,180,183,076 input bytes | 8,163,977 bytes/s
+1,652,900,000 tokens | 7,220,831,343 input bytes | 8,163,543 bytes/s
+1,662,400,000 tokens | 7,262,367,175 input bytes | 8,164,031 bytes/s
+1,671,800,000 tokens | 7,303,579,470 input bytes | 8,163,995 bytes/s
+1,681,200,000 tokens | 7,344,670,761 input bytes | 8,164,190 bytes/s
+1,690,600,000 tokens | 7,385,916,876 input bytes | 8,164,601 bytes/s
+1,700,100,000 tokens | 7,427,514,877 input bytes | 8,165,118 bytes/s
+1,709,700,000 tokens | 7,469,567,392 input bytes | 8,166,001 bytes/s
+1,719,100,000 tokens | 7,510,753,913 input bytes | 8,166,104 bytes/s
+1,728,700,000 tokens | 7,552,673,893 input bytes | 8,167,030 bytes/s
+1,738,200,000 tokens | 7,594,366,462 input bytes | 8,167,881 bytes/s
+1,747,300,000 tokens | 7,633,910,502 input bytes | 8,165,966 bytes/s
+1,756,700,000 tokens | 7,675,077,484 input bytes | 8,165,934 bytes/s
+1,766,000,000 tokens | 7,715,860,090 input bytes | 8,165,870 bytes/s
+1,775,500,000 tokens | 7,757,522,937 input bytes | 8,166,451 bytes/s
+1,784,800,000 tokens | 7,798,147,022 input bytes | 8,166,233 bytes/s
+1,794,200,000 tokens | 7,839,211,114 input bytes | 8,166,038 bytes/s
+1,803,600,000 tokens | 7,880,421,324 input bytes | 8,166,332 bytes/s
+1,813,100,000 tokens | 7,921,904,481 input bytes | 8,166,728 bytes/s
+1,822,500,000 tokens | 7,963,140,041 input bytes | 8,167,013 bytes/s
+1,831,800,000 tokens | 8,003,821,526 input bytes | 8,166,337 bytes/s
+1,841,000,000 tokens | 8,044,033,006 input bytes | 8,165,485 bytes/s
+1,850,400,000 tokens | 8,084,973,207 input bytes | 8,165,578 bytes/s
+1,859,900,000 tokens | 8,126,364,451 input bytes | 8,165,977 bytes/s
+1,868,700,000 tokens | 8,164,713,148 input bytes | 8,163,274 bytes/s
+1,877,600,000 tokens | 8,203,335,400 input bytes | 8,160,846 bytes/s
+1,887,000,000 tokens | 8,244,642,429 input bytes | 8,161,245 bytes/s
+1,896,500,000 tokens | 8,286,177,788 input bytes | 8,161,790 bytes/s
+1,905,900,000 tokens | 8,327,271,825 input bytes | 8,161,945 bytes/s
+1,915,400,000 tokens | 8,368,832,212 input bytes | 8,162,350 bytes/s
+1,925,000,000 tokens | 8,411,006,811 input bytes | 8,163,460 bytes/s
+1,934,400,000 tokens | 8,452,070,211 input bytes | 8,163,470 bytes/s
+1,943,600,000 tokens | 8,492,335,813 input bytes | 8,162,892 bytes/s
+1,952,900,000 tokens | 8,532,918,823 input bytes | 8,162,563 bytes/s
+1,962,400,000 tokens | 8,574,403,924 input bytes | 8,163,186 bytes/s
+1,971,500,000 tokens | 8,614,138,525 input bytes | 8,162,139 bytes/s
+1,981,000,000 tokens | 8,655,904,076 input bytes | 8,163,034 bytes/s
+1,990,500,000 tokens | 8,697,288,121 input bytes | 8,163,255 bytes/s
+1,999,800,000 tokens | 8,737,930,653 input bytes | 8,162,811 bytes/s
+2,009,100,000 tokens | 8,778,481,633 input bytes | 8,162,559 bytes/s
+2,018,700,000 tokens | 8,820,668,479 input bytes | 8,163,519 bytes/s
+2,028,200,000 tokens | 8,862,246,753 input bytes | 8,163,881 bytes/s
+2,037,700,000 tokens | 8,903,599,039 input bytes | 8,164,136 bytes/s
+2,047,200,000 tokens | 8,945,125,258 input bytes | 8,164,447 bytes/s
+2,056,600,000 tokens | 8,986,309,126 input bytes | 8,164,530 bytes/s
+2,066,200,000 tokens | 9,028,385,728 input bytes | 8,165,520 bytes/s
+2,075,600,000 tokens | 9,069,464,568 input bytes | 8,165,740 bytes/s
+2,085,000,000 tokens | 9,110,471,659 input bytes | 8,165,579 bytes/s
+2,094,600,000 tokens | 9,152,587,031 input bytes | 8,166,402 bytes/s
+2,104,200,000 tokens | 9,194,824,572 input bytes | 8,167,324 bytes/s
+2,113,500,000 tokens | 9,235,674,655 input bytes | 8,167,173 bytes/s
+2,122,700,000 tokens | 9,275,762,156 input bytes | 8,166,187 bytes/s
+2,132,300,000 tokens | 9,318,031,619 input bytes | 8,167,345 bytes/s
+2,141,700,000 tokens | 9,359,411,942 input bytes | 8,167,790 bytes/s
+2,151,200,000 tokens | 9,401,050,802 input bytes | 8,168,151 bytes/s
+2,160,600,000 tokens | 9,442,147,061 input bytes | 8,168,074 bytes/s
+2,169,800,000 tokens | 9,482,327,411 input bytes | 8,167,393 bytes/s
+2,179,100,000 tokens | 9,523,071,246 input bytes | 8,167,242 bytes/s
+2,188,400,000 tokens | 9,563,628,569 input bytes | 8,166,809 bytes/s
+2,197,900,000 tokens | 9,605,085,445 input bytes | 8,167,225 bytes/s
+2,207,300,000 tokens | 9,646,228,703 input bytes | 8,167,149 bytes/s
+2,216,800,000 tokens | 9,687,633,295 input bytes | 8,167,526 bytes/s
+2,226,300,000 tokens | 9,729,247,209 input bytes | 8,167,915 bytes/s
+2,235,800,000 tokens | 9,770,604,213 input bytes | 8,168,066 bytes/s
+2,244,600,000 tokens | 9,809,201,211 input bytes | 8,166,050 bytes/s
+2,253,300,000 tokens | 9,847,458,636 input bytes | 8,163,723 bytes/s
+2,262,400,000 tokens | 9,887,459,934 input bytes | 8,163,039 bytes/s
+2,272,000,000 tokens | 9,929,562,236 input bytes | 8,163,834 bytes/s
+2,279,300,000 tokens | 9,961,382,739 input bytes | 8,156,460 bytes/s
+2,288,800,000 tokens | 10,002,802,253 input bytes | 8,156,715 bytes/s
+2,298,100,000 tokens | 10,043,375,421 input bytes | 8,156,419 bytes/s
+2,307,300,000 tokens | 10,083,460,837 input bytes | 8,155,828 bytes/s
+2,316,900,000 tokens | 10,125,465,353 input bytes | 8,156,605 bytes/s
+2,326,200,000 tokens | 10,166,026,581 input bytes | 8,156,182 bytes/s
+2,335,800,000 tokens | 10,207,929,766 input bytes | 8,156,801 bytes/s
+2,345,300,000 tokens | 10,249,436,809 input bytes | 8,157,282 bytes/s
+2,354,900,000 tokens | 10,291,485,580 input bytes | 8,158,163 bytes/s
+2,364,400,000 tokens | 10,332,924,770 input bytes | 8,158,384 bytes/s
+2,373,900,000 tokens | 10,374,549,424 input bytes | 8,158,707 bytes/s
+2,383,200,000 tokens | 10,415,171,874 input bytes | 8,158,488 bytes/s
+2,392,700,000 tokens | 10,456,677,943 input bytes | 8,158,635 bytes/s
+2,402,200,000 tokens | 10,498,262,995 input bytes | 8,158,835 bytes/s
+2,411,600,000 tokens | 10,539,592,709 input bytes | 8,158,948 bytes/s
+2,421,300,000 tokens | 10,582,174,071 input bytes | 8,160,291 bytes/s
+2,430,700,000 tokens | 10,623,148,495 input bytes | 8,160,141 bytes/s
+2,440,200,000 tokens | 10,664,617,911 input bytes | 8,160,314 bytes/s
+2,449,600,000 tokens | 10,705,771,276 input bytes | 8,160,452 bytes/s
+2,459,100,000 tokens | 10,747,566,126 input bytes | 8,161,097 bytes/s
+2,468,700,000 tokens | 10,789,671,791 input bytes | 8,161,769 bytes/s
+2,478,200,000 tokens | 10,831,109,946 input bytes | 8,162,035 bytes/s
+2,487,700,000 tokens | 10,872,685,641 input bytes | 8,162,292 bytes/s
+2,497,200,000 tokens | 10,914,329,783 input bytes | 8,162,607 bytes/s
+2,506,500,000 tokens | 10,954,941,982 input bytes | 8,162,203 bytes/s
+2,515,900,000 tokens | 10,996,016,256 input bytes | 8,162,202 bytes/s
+2,525,400,000 tokens | 11,037,565,433 input bytes | 8,162,489 bytes/s
+2,534,800,000 tokens | 11,078,783,680 input bytes | 8,162,782 bytes/s
+2,544,200,000 tokens | 11,120,040,966 input bytes | 8,163,095 bytes/s
+2,553,700,000 tokens | 11,161,685,233 input bytes | 8,163,564 bytes/s
+2,563,200,000 tokens | 11,203,119,436 input bytes | 8,163,716 bytes/s
+2,572,600,000 tokens | 11,244,321,432 input bytes | 8,163,988 bytes/s
+2,581,800,000 tokens | 11,284,633,205 input bytes | 8,163,603 bytes/s
+2,591,300,000 tokens | 11,326,270,183 input bytes | 8,163,910 bytes/s
+2,600,900,000 tokens | 11,368,495,796 input bytes | 8,164,725 bytes/s
+2,610,200,000 tokens | 11,409,263,538 input bytes | 8,164,557 bytes/s
+2,619,500,000 tokens | 11,449,811,413 input bytes | 8,164,297 bytes/s
+2,629,100,000 tokens | 11,491,950,033 input bytes | 8,165,153 bytes/s
+2,638,600,000 tokens | 11,533,582,099 input bytes | 8,165,441 bytes/s
+2,648,000,000 tokens | 11,574,522,595 input bytes | 8,165,484 bytes/s
+2,657,300,000 tokens | 11,614,924,341 input bytes | 8,165,090 bytes/s
+2,666,900,000 tokens | 11,656,887,212 input bytes | 8,165,680 bytes/s
+2,676,300,000 tokens | 11,698,285,355 input bytes | 8,165,969 bytes/s
+2,685,700,000 tokens | 11,739,443,889 input bytes | 8,166,164 bytes/s
+2,695,300,000 tokens | 11,781,587,535 input bytes | 8,166,703 bytes/s
+2,704,800,000 tokens | 11,823,032,525 input bytes | 8,166,858 bytes/s
+2,714,300,000 tokens | 11,864,295,391 input bytes | 8,166,867 bytes/s
+2,723,600,000 tokens | 11,905,257,463 input bytes | 8,166,944 bytes/s
+Finished: 2,727,120,452 tokens in 1459.66s (1,868,326 tokens/s)
+Total elapsed: 1459.6757s (24.3279 min)
