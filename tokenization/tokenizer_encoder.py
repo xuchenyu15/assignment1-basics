@@ -1,6 +1,7 @@
 import json
 import regex as re
 from collections.abc import Iterable, Iterator
+from functools import lru_cache
 
 
 class TokenizerEncoder():
@@ -18,6 +19,10 @@ class TokenizerEncoder():
             for id, token in vocab.items()
         }
         self.merges = merges
+        self.merge_ranks = {
+            pair: rank 
+            for rank, pair in enumerate(self.merges)
+        }
         if special_tokens == None:
             self.special_tokens = list()
         else:
@@ -56,8 +61,10 @@ class TokenizerEncoder():
         encoded_list = list()
         chunks = self.preprocess_corpus(text)
         for chunk in chunks:
+            # print(self.encode_pretoken.cache_info())
             chunk_encoded = self.encode_chunk(chunk)
             encoded_list.extend(chunk_encoded)
+            # self.encode_pretoken.cache_clear()
         return encoded_list
 
     def encode_iterable(self, iterable: Iterable[str]) -> Iterator[int]:
@@ -96,24 +103,58 @@ class TokenizerEncoder():
         combined_bytes = b"".join([self.vocab[id] for id in ids])
         return combined_bytes.decode("utf-8", errors = "replace")
 
+    @lru_cache(maxsize=50_000)
     def encode_pretoken(self, pretoken: str) -> list[int]:
-        # print(f"current text have {len(text)} as length")
         bytes_list = [bytes([b]) for b in pretoken.encode("utf-8")]
-        # print(f"current encoded list have {len(encoded_list)} tokens")
-        for bytes1, bytes2 in self.merges:
-            new_bytes_list = list()
-            j = 0
-            while j < len(bytes_list):
-                if j == len(bytes_list) - 1:
-                    new_bytes_list.append(bytes_list[j])
-                    j += 1
-                elif bytes_list[j] == bytes1 and bytes_list[j + 1] == bytes2:
-                    new_bytes_list.append(bytes1 + bytes2)
-                    j += 2
-                else:
-                    new_bytes_list.append(bytes_list[j])
-                    j += 1
-            bytes_list = new_bytes_list
+        while True: 
+            pairs_positions = self.get_pairs_positions(bytes_list)
+            pair_merge = self.find_next_pair(pairs_positions)
+            if pair_merge == None:
+                break
+            self.apply_pair_merge(bytes_list, pairs_positions, pair_merge)
+
         encoded_list = [self.indexes[encoded_bytes] for encoded_bytes in bytes_list]
-        return encoded_list
+        return tuple(encoded_list)
+
+    def find_next_pair(self, pairs_positions: dict) -> tuple[bytes, bytes] | None:
+        pair = None
+        for candidate in pairs_positions.keys():
+            if candidate not in self.merge_ranks:
+                continue
+            if pair == None:
+                pair = candidate
+            else:
+                if self.merge_ranks[candidate] < self.merge_ranks[pair]:
+                    pair = candidate
+        return pair
+
+    def apply_pair_merge(self, bytes_list, pairs_positions, pair):
+        if pair not in pairs_positions:
+            return
+        positions = pairs_positions[pair]
+        applied = 0
+        last = -1
+        for i in positions:
+            updated_i = i - applied
+            if updated_i == last:
+                continue
+            else:
+                bytes_list[updated_i : updated_i + 2] = [pair[0] + pair[1]]
+                applied += 1
+                last = updated_i
+
+    def get_pairs_positions(
+        self, 
+        bytes_list: list[bytes]
+    ) -> dict[tuple[bytes, bytes], list[int]]:
+        pairs_positions = dict()
+        for i in range(len(bytes_list) - 1):
+            pair = (bytes_list[i], bytes_list[i + 1])
+            if pair not in pairs_positions:
+                pairs_positions[pair] = []
+            pairs_positions[pair].append(i)
+
+        return pairs_positions
+
+
         
