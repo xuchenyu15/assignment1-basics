@@ -5,6 +5,7 @@ import regex as re
 from collections.abc import Iterable
 from typing import IO, Any, BinaryIO
 from tokenization.tokenizer import Tokenizer
+from tokenization.tokenizer_encoder import TokenizerEncoder
 
 import numpy.typing as npt
 import torch
@@ -562,7 +563,7 @@ def get_tokenizer(
     Returns:
         A BPE tokenizer that uses the provided vocab, merges, and special tokens.
     """
-    raise NotImplementedError
+    return TokenizerEncoder(vocab, merges, special_tokens)
 
 
 def run_train_bpe(
@@ -599,9 +600,9 @@ def run_train_bpe(
     tokenizer = Tokenizer(special_tokens)
     tokenizer.train_tokenizer(vocab_size, corpus)
     print("printing merges: ")
-    print(tokenizer.get_merges_bytes())
+    print(tokenizer.get_byte_merges())
 
-    return (tokenizer.vocab, tokenizer.get_merges_bytes())
+    return (tokenizer.vocab, tokenizer.get_byte_merges())
 
     
 

@@ -63,54 +63,6 @@ class Tokenizer:
         print(f"train finished, current vocabulary size: {len(self.vocab)}")
         return
 
-    def train_tokenizer_from_string_counter(
-        self, 
-        target_vocab_size: int, 
-        string_counter: dict[str, int]
-    ):  
-        if len(self.vocab) >= target_vocab_size:
-            print(f"train finished, current vocabulary size: {len(self.vocab)}")
-            return
-
-        pretokens_map, pairs_map, merged_counts = self.aggregate_counts_from_string_counter(string_counter)
-
-        print("Start training")
-        training_start = time.perf_counter()
-        interval_start = training_start
-        merge_count = 0
-        selection_seconds = 0.0
-        update_seconds = 0.0
-        merge_count = 0
-
-        while len(self.vocab) < target_vocab_size:
-            start = time.perf_counter()
-            next_merge_pair = self.find_next_merge(merged_counts)
-            selection_seconds += time.perf_counter() - start
-            
-            if next_merge_pair == None:
-                print("No merges to be performed")
-                break
-            start = time.perf_counter()
-            next_merge = self.merge(next_merge_pair)
-            self.apply_merge_batch_fast(next_merge, merged_counts, pretokens_map, pairs_map)
-            update_seconds += time.perf_counter() - start
-
-            merge_count += 1
-            if merge_count % 100 == 0:
-                now = time.perf_counter()
-                print(
-                    f"Vocab: {len(self.vocab)} | "
-                    f"Selection: {selection_seconds:.2f}s | "
-                    f"Updates: {update_seconds:.2f}s | "
-                    f"Candidates: {len(merged_counts)}",
-                    flush=True,
-                )
-                selection_seconds = 0.0
-                update_seconds = 0.0
-
-        print(f"train finished, current vocabulary size: {len(self.vocab)}")
-        return
-
     def train_tokenizer_from_string_counter_heap(
         self, 
         target_vocab_size: int, 
@@ -188,27 +140,6 @@ class Tokenizer:
                 return entry.pair
         # nothing left in the heap
         return None
-
-    def train_tokenizer_from_aggregated_counts(
-        self, 
-        target_vocab_size: int, 
-        pretokens_map: dict[tuple, Pretoken], 
-        pairs_map: dict[tuple[int, int], set[tuple]], 
-        merged_counts: dict[tuple[int, int], int]
-    ):  
-        if len(self.vocab) >= target_vocab_size:
-            print(f"train finished, current vocabulary size: {len(self.vocab)}")
-            return
-
-        while len(self.vocab) < target_vocab_size:
-            next_merge_pair = self.find_next_merge(merged_counts)
-            if next_merge_pair == None:
-                print("No merges to be performed")
-                break
-            next_merge = self.merge(next_merge_pair)
-            self.apply_merge_batch(next_merge, merged_counts, pretokens_map, pairs_map)
-        print(f"train finished, current vocabulary size: {len(self.vocab)}")
-        return
 
     def preprocess(self, corpus: str) -> list[str]:
         contents = list()
@@ -305,33 +236,6 @@ class Tokenizer:
             encoded_list = list(new_encoded_list)
         return encoded_list
 
-    def merge_counts(self, counts_list: list[dict[tuple[int, int], list[int]]]) -> dict[tuple[int, int], int]:
-        merged_counts = dict()
-        for counts in counts_list:
-            # print(f"single counts have a size of {len(counts)}")
-            for pair in counts:
-                if pair not in merged_counts:
-                    merged_counts[pair] = len(counts[pair])
-                else:
-                    merged_counts[pair] += len(counts[pair])
-        return merged_counts
-
-    def get_max_pair(self, merged_counts: dict[tuple[int, int], int]) -> None | tuple[int, int]:
-        # print(f"merge counts have a size of {len(merged_counts)}")
-        counts_list = [(count, pair) for pair, count in merged_counts.items()]
-        if len(counts_list) == 0:
-            print("No counts, thus no max pair")
-            return None
-        counts_list.sort(
-            key = lambda entry: (
-                entry[0],
-                (self.vocab[entry[1][0]], self.vocab[entry[1][1]])
-            ),
-            reverse = True
-        )
-        # print(counts_list[0])
-        return counts_list[0][1]
-
     def get_max_pair_scan(self, merged_counts: dict[tuple[int, int], int]) -> None | tuple[int, int]:
         # print(f"merge counts have a size of {len(merged_counts)}")
         best_pair = max(
@@ -372,28 +276,6 @@ class Tokenizer:
             del pretokens_map[encoded_tuple]
             self.ingest_counts(merged_counts, diff_counts)
             self.ingest_pair_map(pairs_map, pretoken.pair_positions.keys(), new_encoded_tuple)
-
-        return
-
-    def apply_merge_batch_fast(
-        self, 
-        merge, 
-        merged_counts,
-        pretokens_map, 
-        pairs_map
-    ) -> dict[tuple[int, int], int]:
-        merge_pair = merge[1]
-        if merge_pair not in pairs_map or len(pairs_map[merge_pair]) == 0:
-            return
-        for encoded_tuple in list(pairs_map[merge_pair]):
-            pretoken = pretokens_map[encoded_tuple]
-            origin_pairs = set(pretoken.pair_positions.keys())
-            diff_counts = pretoken.apply_merge(merge)
-            removed_pairs = origin_pairs - set(pretoken.pair_positions.keys())
-            new_pairs = pretoken.pair_positions.keys() - origin_pairs
-            self.ingest_counts(merged_counts, diff_counts)
-            self.remove_pair_map(pairs_map, removed_pairs, encoded_tuple)
-            self.ingest_pair_map(pairs_map, new_pairs, encoded_tuple)
 
         return
 
@@ -457,10 +339,9 @@ class Tokenizer:
                 del merged_counts[pair]
         return
 
-    def get_merges_bytes(self):
-        merges_bytes = list()
+    def get_byte_merges(self):
+        byte_merges = list()
         for _, i1, i2 in self.merges:
-            merges_bytes.append((self.vocab[i1], self.vocab[i2]))
-        return merges_bytes
-
-    
+            byte_merges.append((self.vocab[i1], self.vocab[i2]))
+        self.byte_merges = byte_merges
+        return byte_merges
