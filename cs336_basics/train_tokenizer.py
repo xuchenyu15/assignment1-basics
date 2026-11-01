@@ -21,52 +21,18 @@ def process_chunk(task):
     return worker_counts
 
 
-# def aggregate_pretokens_map(
-#     aggregated_pretokens_map: dict[tuple, Pretoken], 
-#     pretokens_map: dict[tuple, Pretoken]
-# ):
-#     for encoded_tuple in pretokens_map.keys():
-#         if encoded_tuple not in aggregated_pretokens_map:
-#             aggregated_pretokens_map[encoded_tuple] = pretokens_map[encoded_tuple]
-#         else:
-#             aggregated_pretokens_map[encoded_tuple].increase_occurrence(pretokens_map[encoded_tuple].occurrence)
-#     return 
-
-# def aggregate_pairs_map(
-#     aggregated_pairs_map: dict[tuple[int, int], set[tuple]], 
-#     pairs_map: dict[tuple[int, int], set[tuple]]
-# ):
-#     for pair in pairs_map:
-#         if pair not in aggregated_pairs_map:
-#             aggregated_pairs_map[pair] = pairs_map[pair]
-#         else:
-#             aggregated_pairs_map[pair].update(pairs_map[pair])
-#     return 
-
-# def aggregate_merged_counts(
-#     aggregated_merged_counts: dict[tuple[int, int], int], 
-#     merged_counts: dict[tuple[int, int], int]
-# ):
-#     for pair in merged_counts:
-#         if pair not in aggregated_merged_counts:
-#             aggregated_merged_counts[pair] = merged_counts[pair]
-#         else:
-#             aggregated_merged_counts[pair] += merged_counts[pair]
-#     return 
-
-
 def main():
     # path = "mypath"
-    path = (
-        Path(__file__).resolve().parent.parent
-        / "data"
-        / "owt_train.txt"
-    )
     # path = (
     #     Path(__file__).resolve().parent.parent
     #     / "data"
-    #     / "TinyStoriesV2-GPT4-train.txt"
+    #     / "owt_train.txt"
     # )
+    path = (
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "TinyStoriesV2-GPT4-train.txt"
+    )
     # path = (
     #     Path(__file__).resolve().parent.parent
     #     / "tests"
@@ -106,7 +72,7 @@ def main():
     tokenizer = Tokenizer(["<|endoftext|>"])
     tokenizer.train_tokenizer_from_string_counter_heap(32000, combined_counts)
     print("printing merges: ")
-    print(tokenizer.get_merges_bytes())
+    print(tokenizer.get_byte_merges())
     token_id, token = max(tokenizer.vocab.items(), key=lambda item: len(item[1]))
     print("printing longest token: ")
     print(token_id, token)
@@ -118,7 +84,7 @@ def main():
         f.write("\n")
 
     with open(f"merges-{str(calculated)}.json", "w", encoding="utf-8") as f:
-        json.dump([[left.hex(), right.hex()] for left, right in tokenizer.get_merges_bytes()], f, indent=2)
+        json.dump([[left.hex(), right.hex()] for left, right in tokenizer.get_byte_merges()], f, indent=2)
         f.write("\n")
             
             

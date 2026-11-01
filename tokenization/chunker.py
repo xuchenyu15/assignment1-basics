@@ -48,3 +48,66 @@ class Chunker:
 
         # Make sure all boundaries are unique, but might be fewer than desired_num_chunks
         return sorted(set(chunk_boundaries))
+
+    def find_samples(
+        self,
+        file: BinaryIO,
+        split_special_token: bytes,
+        sample_number: int
+    ) -> list[bytes]:
+        assert isinstance(split_special_token, bytes), "Must represent special token as a bytestring"
+
+        # Get total file size in bytes
+        file.seek(0, os.SEEK_END)
+        file.seek(0)
+        start = None
+        end = None
+        samples = list()
+
+        while len(samples) < sample_number:
+            if end is None:
+                start = self.seek_to_token(file, split_special_token)
+            else: 
+                start = end
+            if start is None:
+                break
+            content_start = start + len(split_special_token)
+            file.read(len(split_special_token))
+            end = self.seek_to_token(file, split_special_token)
+            if end is None:
+                file.seek(content_start)
+                document_bytes = file.read() # read through EOF
+                if document_bytes:
+                    samples.append(document_bytes)
+                    break
+            else:
+                file.seek(content_start)
+                document_bytes = file.read(end - content_start)
+                samples.append(document_bytes)
+
+        return samples
+            
+                
+
+    def seek_to_token(self, file, split_special_token: bytes):
+        if not split_special_token:
+            raise ValueError("Token must not be empty")
+
+        overlap = b""
+        keep = len(split_special_token) - 1
+
+        while True:
+            read_start = file.tell()
+            block = file.read(4096)
+            if not block:
+                return None
+
+            data = overlap + block
+            index = data.find(split_special_token)
+
+            if index != -1:
+                position = read_start - len(overlap) + index
+                file.seek(position)
+                return position
+
+            overlap = data[-keep:] if keep else b""
