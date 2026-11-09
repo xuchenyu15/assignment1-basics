@@ -6,6 +6,8 @@ from collections.abc import Iterable
 from typing import IO, Any, BinaryIO
 from tokenization.tokenizer import Tokenizer
 from tokenization.tokenizer_encoder import TokenizerEncoder
+from model.linear_module import LinearModule
+from model.embedding import Embedding
 
 import numpy.typing as npt
 import torch
@@ -32,8 +34,10 @@ def run_linear(
     Returns:
         Float[Tensor, "... d_out"]: The transformed output of your linear module.
     """
-
-    raise NotImplementedError
+    lm = LinearModule(d_in, d_out)
+    lm.set_weight(weights)
+    return lm.forward(in_features)
+    
 
 
 def run_embedding(
@@ -55,7 +59,9 @@ def run_embedding(
         Float[Tensor, "... d_model"]: Batch of embeddings returned by your Embedding layer.
     """
 
-    raise NotImplementedError
+    embedding = Embedding(vocab_size, d_model)
+    embedding.set_weight(weights)
+    return embedding.forward(token_ids)
 
 
 def run_swiglu(
